@@ -1,6 +1,7 @@
 package de.htwg.swqs.cart.model;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 public class Product {
@@ -11,7 +12,8 @@ public class Product {
     private String description;
     private BigDecimal priceEuro;
 
-    public Product() {}
+    public Product() {
+    }
 
     public Product(long id, String name, String description, BigDecimal priceEuro) {
         this.id = id;
@@ -60,5 +62,21 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", priceEuro=" + priceEuro +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return id == product.id &&
+                Objects.equals(name, product.name) &&
+                Objects.equals(description, product.description) &&
+                Objects.equals(priceEuro, product.priceEuro);
     }
 }

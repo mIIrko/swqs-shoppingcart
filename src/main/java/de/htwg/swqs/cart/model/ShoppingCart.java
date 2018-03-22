@@ -8,7 +8,10 @@ import java.util.List;
 
 public class ShoppingCart {
 
-    private static long idGenerator= 10000L;
+    /**
+     * Counter for the shopping cart {@code id}, used when creating new shopping carts
+     */
+    private static long idGenerator= 0L;
 
     private long id;
     private List<Product> itemsInShoppingCart;
@@ -16,8 +19,9 @@ public class ShoppingCart {
 
     public ShoppingCart() {
         this.itemsInShoppingCart = new ArrayList<Product>();
+        this.cartTotalSum = new BigDecimal(0);
         // set a new id to the created shopping cart
-        this.id = idGenerator++;
+        this.id = ++idGenerator;
     }
 
     public long getId() {
@@ -38,5 +42,14 @@ public class ShoppingCart {
 
     public void setCartTotalSum(BigDecimal cartTotalSum) {
         this.cartTotalSum = cartTotalSum;
+    }
+
+    @Override
+    public String toString() {
+        return "ShoppingCart{" +
+                "id=" + id +
+                ", itemsInShoppingCart=" + itemsInShoppingCart +
+                ", cartTotalSum=" + cartTotalSum +
+                '}';
     }
 }
