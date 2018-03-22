@@ -17,6 +17,11 @@ public class ShoppingCartItem {
     public ShoppingCartItem() {
     }
 
+    public ShoppingCartItem(@Positive int quantity, @NotNull Product product) {
+        this.quantity = quantity;
+        this.product = product;
+    }
+
     public int getQuantity() {
         return quantity;
     }

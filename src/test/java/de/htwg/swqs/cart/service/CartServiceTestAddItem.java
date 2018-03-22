@@ -2,6 +2,7 @@ package de.htwg.swqs.cart.service;
 
 import de.htwg.swqs.cart.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
+import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
 import org.junit.Before;
@@ -30,22 +31,23 @@ public class CartServiceTestAddItem {
     public void addItemToCart() {
         // setup
         int quantityToAdd = 3;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToAdd, prod);
 
         // execute
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), item);
 
         // verify
-        int quantityOfProductsInCart = Collections.frequency(cartService.getShoppingCart(cart.getId()).getItemsInShoppingCart(), prod);
-        assertEquals(quantityOfProductsInCart, quantityToAdd);
+        assertTrue(cartService.getShoppingCart(cart.getId()).getItemsInShoppingCart().contains(item));
     }
 
     @Test
     public void addItemToCartWithQuantityZero() {
         // setup
         int quantityToAdd = 0;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToAdd, prod);
 
         // execute
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), item);
 
         // verify
         int quantityOfProductsInCart = Collections.frequency(cartService.getShoppingCart(cart.getId()).getItemsInShoppingCart(), prod);
@@ -59,22 +61,22 @@ public class CartServiceTestAddItem {
 
         // setup
         int quantityToAdd = -5;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToAdd, prod);
 
         // execute
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), item);
 
-        // verify
-        int quantityOfProductsInCart = Collections.frequency(cartService.getShoppingCart(cart.getId()).getItemsInShoppingCart(), prod);
-        assertEquals(quantityOfProductsInCart, quantityToAdd);
+
     }
 
     @Test(expected = ShoppingCartException.class)
     public void addItemToCartWhoDoesNotExist() {
         // setup
         int quantityToAdd = 3;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToAdd, prod);
 
         // execute
-        cartService.addItemToCart(9999999, prod, quantityToAdd);
+        cartService.addItemToCart(9999999, item);
 
         // verification is done by the expected exception
     }

@@ -2,6 +2,7 @@ package de.htwg.swqs.cart.service;
 
 import de.htwg.swqs.cart.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
+import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
 import org.junit.Before;
@@ -9,6 +10,8 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -30,15 +33,17 @@ public class CartServiceTestRemoveItem {
     public void removeItemSuccessfulFromCart() {
         // setup
         int quantityToRemove = 3;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToRemove, prod);
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToRemove);
+        cartService.addItemToCart(cart.getId(), item);
+        // create an identical ShoppingCartItem
+        ShoppingCartItem anotherItem = new ShoppingCartItem(3, prod);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), prod, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), item);
 
         // verify
-        assertEquals(0, Collections.frequency(cart.getItemsInShoppingCart(), prod));
-        assertTrue(cart.getItemsInShoppingCart().isEmpty());
+        assertFalse(cart.getItemsInShoppingCart().contains(item));
     }
 
     @Test
@@ -46,41 +51,50 @@ public class CartServiceTestRemoveItem {
         // setup
         int quantityToAdd = 3;
         int quantityToRemove = 2;
+        ShoppingCartItem itemToAdd = new ShoppingCartItem(quantityToAdd, prod);
+        ShoppingCartItem itemToRemove = new ShoppingCartItem(quantityToRemove, prod);
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), itemToAdd);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), prod, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), itemToRemove);
 
         // verify
-        assertEquals((quantityToAdd - quantityToRemove), Collections.frequency(cart.getItemsInShoppingCart(), prod));
+        assertEquals((quantityToAdd - quantityToRemove), itemToAdd.getQuantity());
+        assertTrue(cart.getItemsInShoppingCart().contains(itemToAdd));
     }
+
     @Test
     public void removeItemFromCartWithQuantityZero() {
         // setup
         int quantityToAdd = 3;
         int quantityToRemove = 0;
+        ShoppingCartItem itemToAdd = new ShoppingCartItem(quantityToAdd, prod);
+        ShoppingCartItem itemToRemove = new ShoppingCartItem(quantityToRemove, prod);
+
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), itemToAdd);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), prod, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), itemToRemove);
 
         // verify
-        assertEquals(quantityToAdd - quantityToRemove, Collections.frequency(cart.getItemsInShoppingCart(), prod));
+        assertEquals((quantityToAdd - quantityToRemove), itemToAdd.getQuantity());
     }
 
     @Test(expected = ShoppingCartItemWrongQuantityException.class)
     public void removeItemFromCartWithNegativeQuantity() {
-
         // setup
         int quantityToAdd = 3;
         int quantityToRemove = -5;
+        ShoppingCartItem itemToAdd = new ShoppingCartItem(quantityToAdd, prod);
+        ShoppingCartItem itemToRemove = new ShoppingCartItem(quantityToRemove, prod);
+
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), itemToAdd);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), prod, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), itemToRemove);
 
         // verification is done with the exception
 
@@ -90,11 +104,15 @@ public class CartServiceTestRemoveItem {
     public void removeItemFromCartWhoDoesNotExist() {
         // setup
         int quantityToRemove = 3;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToRemove, prod);
+
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToRemove);
+        cartService.addItemToCart(cart.getId(), item);
 
         // execute
-        cartService.removeItemFromCart(9999999, prod, quantityToRemove);
+        cartService.removeItemFromCart(9999999, item);
+
+        // verification is done with the exception
 
     }
 
@@ -102,28 +120,45 @@ public class CartServiceTestRemoveItem {
     public void removeItemWhoDoesNotExistFromCart() {
         // setup
         int quantityToRemove = 3;
+        ShoppingCartItem item = new ShoppingCartItem(quantityToRemove, prod);
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToRemove);
-        // create another product
+        cartService.addItemToCart(cart.getId(), item);
+        // create another ShoppingCartItem with a different product
         Product anotherProd = new Product(2, "Another sample product", "the description", BigDecimal.valueOf(42));
+        ShoppingCartItem anotherItem = new ShoppingCartItem(2, anotherProd);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), anotherProd, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), anotherItem);
+
+        // verification is done with the exception
     }
 
     @Test(expected = ShoppingCartItemWrongQuantityException.class)
     public void removeItemFromCartInWrongQuantity() {
+
         // setup
-        int quantityToAdd = 2;
-        int quantityToRemove = 3;
+        int quantityToAdd = 3;
+        int quantityToRemove = 5;
+        ShoppingCartItem itemToAdd = new ShoppingCartItem(quantityToAdd, prod);
+        ShoppingCartItem itemToRemove = new ShoppingCartItem(quantityToRemove, prod);
+
         // first add all the items to the cart
-        cartService.addItemToCart(cart.getId(), prod, quantityToAdd);
+        cartService.addItemToCart(cart.getId(), itemToAdd);
 
         // execute
-        cartService.removeItemFromCart(cart.getId(), prod, quantityToRemove);
+        cartService.removeItemFromCart(cart.getId(), itemToRemove);
 
         // verify
         assertEquals((quantityToAdd - quantityToRemove), Collections.frequency(cart.getItemsInShoppingCart(), prod));
         assertTrue(cart.getItemsInShoppingCart().isEmpty());
+    }
+
+    private Optional<ShoppingCartItem> getExistingItemFromShoppingCart(List<ShoppingCartItem> shoppingCartItems, Product productToRemove) {
+        for (ShoppingCartItem tmpItem : shoppingCartItems) {
+            if (tmpItem.getProduct().equals(productToRemove)) {
+                return Optional.of(tmpItem);
+            }
+        }
+        return Optional.empty();
     }
 }

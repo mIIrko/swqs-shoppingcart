@@ -2,15 +2,18 @@ package de.htwg.swqs.cart.service;
 
 import de.htwg.swqs.cart.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
+import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Service
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
 
     private Map<Long, ShoppingCart> shoppingCarts;
 
@@ -28,63 +31,70 @@ public class CartServiceImpl implements CartService{
 
     }
 
-    public ShoppingCart removeItemFromCart(long cartId, Product product, int quantityToRemove) {
+    public ShoppingCart removeItemFromCart(long cartId, ShoppingCartItem item) {
 
         if (!this.shoppingCarts.containsKey(cartId)) {
             throw new ShoppingCartException("Shopping cart does not exist");
         }
-        if (quantityToRemove < 0) {
+        // todo: can be done by java validation
+        if (item.getQuantity() < 0) {
             throw new ShoppingCartItemWrongQuantityException("Can not remove negative quantity");
         }
 
         ShoppingCart cart = this.shoppingCarts.get(cartId);
-
-        // quantity of item in shopping cart
-        int quantityOfItemBeforeUpdate = Collections.frequency(cart.getItemsInShoppingCart(), product);
-        // if the product is not present in the shopping cart throw exception
-        if (quantityOfItemBeforeUpdate <= 0) {
+        // try to get the existing shopping cart item with the same product which we want to remove (or reduce the quantity)
+        Optional<ShoppingCartItem> existingShoppingCartItem = getExistingItemFromShoppingCart(cart.getItemsInShoppingCart(), item.getProduct());
+        if (!existingShoppingCartItem.isPresent()) {
             throw new ShoppingCartException("Shopping cart does not contain the product");
         }
-        // if not enough items in shopping cart throw also exception
-        if (quantityOfItemBeforeUpdate < quantityToRemove) {
-            throw new ShoppingCartItemWrongQuantityException("Removing " + quantityToRemove + " items from shopping cart not possible (just " + quantityOfItemBeforeUpdate + " present)");
+
+        // quantity of item in shopping cart
+        int quantityOfItemBeforeUpdate = existingShoppingCartItem.get().getQuantity();
+        // if not enough items in shopping cart throw exception
+        if (quantityOfItemBeforeUpdate < item.getQuantity()) {
+            throw new ShoppingCartItemWrongQuantityException("Removing " + item.getQuantity() + " items from shopping cart not possible (just " + quantityOfItemBeforeUpdate + " present)");
         }
 
-        List<Product> newItemsInShoppingCart = cart.getItemsInShoppingCart();
-        BigDecimal newCartTotalSum = cart.getCartTotalSum();
-
-        for (int i = 0; i < quantityToRemove; i++) {
-            newCartTotalSum = newCartTotalSum.subtract(product.getPriceEuro());
-            newItemsInShoppingCart.remove(product);
+        // update the total sum of the cart
+        BigDecimal priceOfTheRemovedItems = BigDecimal.valueOf(item.getQuantity()).multiply(item.getProduct().getPriceEuro());
+        cart.setCartTotalSum(cart.getCartTotalSum().subtract(priceOfTheRemovedItems));
+        // update the quantity of the shopping cart item
+        int newQuantityOfProduct = existingShoppingCartItem.get().getQuantity() - item.getQuantity();
+        if (newQuantityOfProduct == 0) {
+            cart.getItemsInShoppingCart().remove(existingShoppingCartItem.get());
+        } else {
+            existingShoppingCartItem.get().setQuantity(newQuantityOfProduct);
         }
-
-        cart.setCartTotalSum(newCartTotalSum);
-        cart.setItemsInShoppingCartAsList(newItemsInShoppingCart);
 
         return cart;
     }
 
-    public ShoppingCart addItemToCart(long cartId, Product product, int quantityToAdd) {
+    public ShoppingCart addItemToCart(long cartId, ShoppingCartItem item) {
 
         if (!this.shoppingCarts.containsKey(cartId)) {
             throw new ShoppingCartException("Shopping cart does not exist");
         }
-        if (quantityToAdd < 0) {
+        // todo: will be done by java validation
+        if (item.getQuantity() < 0) {
             throw new ShoppingCartItemWrongQuantityException("Can not add negative quantity");
         }
 
         ShoppingCart cart = this.shoppingCarts.get(cartId);
+        // try to get the existing shopping cart item with the same product which we want to add (or raise the quantity)
+        Optional<ShoppingCartItem> existingShoppingCartItem = getExistingItemFromShoppingCart(cart.getItemsInShoppingCart(), item.getProduct());
 
-        List<Product> newItemsInShoppingCart = cart.getItemsInShoppingCart();
-        BigDecimal newCartTotalSum = cart.getCartTotalSum();
-
-        for (int i = 0; i < quantityToAdd; i++) {
-            newCartTotalSum = newCartTotalSum.add(product.getPriceEuro());
-            newItemsInShoppingCart.add(product);
+        if (existingShoppingCartItem.isPresent()) {
+            // the product is already in the cart
+            int quantityOfItemBeforeUpdate = existingShoppingCartItem.get().getQuantity();
+            existingShoppingCartItem.get().setQuantity(quantityOfItemBeforeUpdate + item.getQuantity());
+        } else {
+            // product not there, add it to cart
+            cart.getItemsInShoppingCart().add(item);
         }
 
-        cart.setCartTotalSum(newCartTotalSum);
-        cart.setItemsInShoppingCartAsList(newItemsInShoppingCart);
+        // update the total sum of the cart
+        BigDecimal priceOfTheAddedItems = BigDecimal.valueOf(item.getQuantity()).multiply(item.getProduct().getPriceEuro(), new MathContext(2));
+        cart.setCartTotalSum(cart.getCartTotalSum().add(priceOfTheAddedItems));
 
         return cart;
     }
@@ -97,7 +107,7 @@ public class CartServiceImpl implements CartService{
 
         ShoppingCart cart = this.shoppingCarts.get(cartId);
         // replace the itemlist with empty arraylist
-        cart.setItemsInShoppingCartAsList(new ArrayList<Product>());
+        cart.setItemsInShoppingCartAsList(new ArrayList<ShoppingCartItem>());
         // reset the cart total sum
         cart.setCartTotalSum(BigDecimal.valueOf(0));
         return cart;
@@ -109,5 +119,15 @@ public class CartServiceImpl implements CartService{
         this.shoppingCarts.put(cart.getId(), cart);
         return cart;
     }
+
+    private Optional<ShoppingCartItem> getExistingItemFromShoppingCart(List<ShoppingCartItem> shoppingCartItems, Product productToRemove) {
+        for (ShoppingCartItem tmpItem : shoppingCartItems) {
+            if (tmpItem.getProduct().equals(productToRemove)) {
+                return Optional.of(tmpItem);
+            }
+        }
+        return Optional.empty();
+    }
+
 
 }

@@ -41,12 +41,12 @@ public class CartController {
 
     @PostMapping(value = "/{id}/add-item", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ShoppingCart addItemToCart(@PathVariable long id, @RequestBody ShoppingCartItem item) {
-        return this.cartService.addItemToCart(id, item.getProduct(), item.getQuantity());
+        return this.cartService.addItemToCart(id, item);
     }
 
     @PostMapping(value = "/{id}/remove-item", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ShoppingCart removeItemFromCart(@PathVariable long id, @RequestBody ShoppingCartItem item) {
-        return this.cartService.removeItemFromCart(id, item.getProduct(), item.getQuantity());
+        return this.cartService.removeItemFromCart(id, item);
     }
 
 

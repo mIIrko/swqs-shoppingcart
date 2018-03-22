@@ -2,6 +2,7 @@ package de.htwg.swqs.cart.service;
 
 import de.htwg.swqs.cart.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
+import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import org.junit.Test;
 
@@ -61,7 +62,8 @@ public class CartServiceTest {
         CartServiceImpl cartService = new CartServiceImpl();
         ShoppingCart cart = cartService.createNewShoppingCart();
         Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
-        cartService.addItemToCart(cart.getId(), prod, 1);
+        ShoppingCartItem item = new ShoppingCartItem(1, prod);
+        cartService.addItemToCart(cart.getId(), item);
 
         // execute
         cartService.clearShoppingCart(cart.getId());
@@ -77,7 +79,8 @@ public class CartServiceTest {
         CartServiceImpl cartService = new CartServiceImpl();
         ShoppingCart cart = cartService.createNewShoppingCart();
         Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
-        cartService.addItemToCart(cart.getId(), prod, 1);
+        ShoppingCartItem item = new ShoppingCartItem(1, prod);
+        cartService.addItemToCart(cart.getId(), item);
 
         // execute
         cartService.clearShoppingCart(9999999);

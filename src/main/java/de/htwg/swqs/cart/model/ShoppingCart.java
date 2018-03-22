@@ -14,11 +14,11 @@ public class ShoppingCart {
     private static long idGenerator= 0L;
 
     private long id;
-    private List<Product> itemsInShoppingCart;
+    private List<ShoppingCartItem> itemsInShoppingCart;
     private BigDecimal cartTotalSum;
 
     public ShoppingCart() {
-        this.itemsInShoppingCart = new ArrayList<Product>();
+        this.itemsInShoppingCart = new ArrayList<ShoppingCartItem>();
         this.cartTotalSum = new BigDecimal(0);
         // set a new id to the created shopping cart
         this.id = ++idGenerator;
@@ -28,11 +28,11 @@ public class ShoppingCart {
         return id;
     }
 
-    public List<Product> getItemsInShoppingCart() {
+    public List<ShoppingCartItem> getItemsInShoppingCart() {
         return itemsInShoppingCart;
     }
 
-    public void setItemsInShoppingCartAsList(List<Product> itemsInShoppingCart) {
+    public void setItemsInShoppingCartAsList(List<ShoppingCartItem> itemsInShoppingCart) {
         this.itemsInShoppingCart = itemsInShoppingCart;
     }
 
