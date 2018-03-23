@@ -1,6 +1,5 @@
 package de.htwg.swqs.cart.controller;
 
-import de.htwg.swqs.cart.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.service.CartService;
@@ -20,7 +19,7 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
-    public CartController(CartServiceImpl cartService) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 

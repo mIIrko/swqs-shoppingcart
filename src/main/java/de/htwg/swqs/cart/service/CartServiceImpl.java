@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -18,7 +17,7 @@ public class CartServiceImpl implements CartService {
     private Map<Long, ShoppingCart> shoppingCarts;
 
     public CartServiceImpl() {
-        this.shoppingCarts = new HashMap<Long, ShoppingCart>();
+        this.shoppingCarts = new HashMap<>();
     }
 
     public ShoppingCart getShoppingCart(long cartId) {
@@ -107,7 +106,7 @@ public class CartServiceImpl implements CartService {
 
         ShoppingCart cart = this.shoppingCarts.get(cartId);
         // replace the itemlist with empty arraylist
-        cart.setItemsInShoppingCartAsList(new ArrayList<ShoppingCartItem>());
+        cart.setItemsInShoppingCartAsList(new ArrayList<>());
         // reset the cart total sum
         cart.setCartTotalSum(BigDecimal.valueOf(0));
         return cart;

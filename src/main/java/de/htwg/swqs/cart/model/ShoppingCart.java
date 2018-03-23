@@ -1,7 +1,5 @@
 package de.htwg.swqs.cart.model;
 
-import de.htwg.swqs.cart.utils.ShoppingCartException;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +16,8 @@ public class ShoppingCart {
     private BigDecimal cartTotalSum;
 
     public ShoppingCart() {
-        this.itemsInShoppingCart = new ArrayList<ShoppingCartItem>();
-        this.cartTotalSum = new BigDecimal(0);
+        this.itemsInShoppingCart = new ArrayList<>();
+        this.cartTotalSum = new BigDecimal("0");
         // set a new id to the created shopping cart
         this.id = ++idGenerator;
     }
