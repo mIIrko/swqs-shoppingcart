@@ -7,7 +7,6 @@ import de.htwg.swqs.cart.utils.ShoppingCartException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import static org.junit.Assert.*;
 

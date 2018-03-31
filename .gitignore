@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+application.log
 
 ### STS ###
 .apt_generated
@@ -23,3 +24,24 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Eclipse ###
+
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.externalToolBuilders/
+# Locally stored "Eclipse launch configurations"
+*.launch
+# Java annotation processor (APT)
+.factorypath
+# JDT-specific (Eclipse Java Development Tools)
+.classpath

@@ -2,9 +2,7 @@ package de.htwg.swqs.cart.service;
 
 import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface CartService {
 
     ShoppingCart createNewShoppingCart();
