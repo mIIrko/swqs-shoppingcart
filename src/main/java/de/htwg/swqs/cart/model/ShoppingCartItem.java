@@ -1,7 +1,6 @@
 package de.htwg.swqs.cart.model;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import de.htwg.swqs.catalog.model.Product;
 
 /**
  * Class will be used to convert the payload of requests to add new products
@@ -9,15 +8,14 @@ import javax.validation.constraints.Positive;
  */
 public class ShoppingCartItem {
 
-    @Positive
+
     private int quantity;
-    @NotNull
     private Product product;
 
     public ShoppingCartItem() {
     }
 
-    public ShoppingCartItem(@Positive int quantity, @NotNull Product product) {
+    public ShoppingCartItem(int quantity, Product product) {
         this.quantity = quantity;
         this.product = product;
     }

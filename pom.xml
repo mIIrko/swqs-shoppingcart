@@ -63,6 +63,12 @@
             <version>LATEST</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.htwg.swqs</groupId>
+            <artifactId>catalog</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

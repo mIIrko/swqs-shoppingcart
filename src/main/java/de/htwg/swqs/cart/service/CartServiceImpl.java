@@ -1,14 +1,15 @@
 package de.htwg.swqs.cart.service;
 
-import de.htwg.swqs.cart.model.Product;
-import de.htwg.swqs.cart.model.ShoppingCart;
-import de.htwg.swqs.cart.model.ShoppingCartItem;
+import de.htwg.swqs.catalog.model.Product;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
+import de.htwg.swqs.catalog.repository.CatalogRepository;
+import de.htwg.swqs.cart.model.ShoppingCart;
+import de.htwg.swqs.cart.model.ShoppingCartItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.*;
 
 @Service
@@ -16,7 +17,11 @@ public class CartServiceImpl implements CartService {
 
     private Map<Long, ShoppingCart> shoppingCarts;
 
-    public CartServiceImpl() {
+    private CatalogRepository catalogRepository;
+
+    @Autowired
+    public CartServiceImpl(CatalogRepository catalogRepository) {
+        this.catalogRepository = catalogRepository;
         this.shoppingCarts = new HashMap<>();
     }
 
@@ -68,6 +73,19 @@ public class CartServiceImpl implements CartService {
         return cart;
     }
 
+    public ShoppingCart removeItemFromCart(long cartId, long productId, int quantity) {
+        Optional<Product> product = this.catalogRepository.findById(productId);
+        if (!product.isPresent()) {
+            // todo: throw exception
+        }
+
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setQuantity(quantity);
+        item.setProduct(product.get());
+
+        return removeItemFromCart(cartId, item);
+    }
+
     public ShoppingCart addItemToCart(long cartId, ShoppingCartItem item) {
 
         if (!this.shoppingCarts.containsKey(cartId)) {
@@ -92,10 +110,17 @@ public class CartServiceImpl implements CartService {
         }
 
         // update the total sum of the cart
-        BigDecimal priceOfTheAddedItems = BigDecimal.valueOf(item.getQuantity()).multiply(item.getProduct().getPriceEuro(), new MathContext(2));
+        BigDecimal priceOfTheAddedItems = BigDecimal.valueOf(item.getQuantity()).multiply(item.getProduct().getPriceEuro());
         cart.setCartTotalSum(cart.getCartTotalSum().add(priceOfTheAddedItems));
 
         return cart;
+    }
+
+    public ShoppingCart addItemToCart(long cartId, long productId, int quantity) {
+        ShoppingCartItem item = new ShoppingCartItem();
+        item.setProduct(getProductFromCatalog(productId));
+        item.setQuantity(quantity);
+        return addItemToCart(cartId, item);
     }
 
     public ShoppingCart clearShoppingCart(long cartId) {
@@ -126,6 +151,15 @@ public class CartServiceImpl implements CartService {
             }
         }
         return Optional.empty();
+    }
+
+    private Product getProductFromCatalog(long productId) {
+        Optional<Product> p = this.catalogRepository.findById(productId);
+
+        if (!p.isPresent()) {
+            throw new ShoppingCartException("Product does not exist");
+        }
+        return p.get();
     }
 
 

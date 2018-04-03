@@ -1,22 +1,25 @@
 package de.htwg.swqs.cart.service;
 
-import de.htwg.swqs.cart.model.Product;
+import de.htwg.swqs.catalog.model.Product;
 import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
+import de.htwg.swqs.catalog.repository.CatalogRepository;
 import org.junit.Test;
 
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CartServiceTest {
 
     @Test
     public void createNewShoppingCart() {
         // setup
-        CartServiceImpl cartService = new CartServiceImpl();
-
+        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
+        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
         // execute
         ShoppingCart newCart = cartService.createNewShoppingCart();
 
@@ -32,7 +35,8 @@ public class CartServiceTest {
     @Test
     public void getShoppingCartWhoExists() {
         // setup
-        CartServiceImpl cartService = new CartServiceImpl();
+        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
+        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
         ShoppingCart createdCart = cartService.createNewShoppingCart();
 
         // execute
@@ -46,7 +50,8 @@ public class CartServiceTest {
     @Test(expected = ShoppingCartException.class)
     public void getShoppingCartWhoDoesNotExist() {
         // setup
-        CartServiceImpl cartService = new CartServiceImpl();
+        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
+        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
         ShoppingCart cart = cartService.createNewShoppingCart();
 
         // execute
@@ -58,7 +63,8 @@ public class CartServiceTest {
     @Test
     public void clearShoppingCart() {
         // setup
-        CartServiceImpl cartService = new CartServiceImpl();
+        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
+        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
         ShoppingCart cart = cartService.createNewShoppingCart();
         Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
         ShoppingCartItem item = new ShoppingCartItem(1, prod);
@@ -75,7 +81,8 @@ public class CartServiceTest {
     @Test(expected = ShoppingCartException.class)
     public void clearShoppingCartWhoDoesNotExist() {
         // setup
-        CartServiceImpl cartService = new CartServiceImpl();
+        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
+        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
         ShoppingCart cart = cartService.createNewShoppingCart();
         Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
         ShoppingCartItem item = new ShoppingCartItem(1, prod);

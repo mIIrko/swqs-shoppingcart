@@ -13,6 +13,10 @@ public interface CartService {
 
     ShoppingCart removeItemFromCart(long cartId, ShoppingCartItem item);
 
+    ShoppingCart removeItemFromCart(long cartId, long productId, int quantity);
+
     ShoppingCart addItemToCart(long cartId, ShoppingCartItem item);
+
+    ShoppingCart addItemToCart(long cartId, long productId, int quantity);
 
 }
