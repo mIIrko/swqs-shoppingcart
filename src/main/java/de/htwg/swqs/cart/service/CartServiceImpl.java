@@ -3,9 +3,9 @@ package de.htwg.swqs.cart.service;
 import de.htwg.swqs.catalog.model.Product;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
-import de.htwg.swqs.catalog.repository.CatalogRepository;
 import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
+import de.htwg.swqs.catalog.service.CatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +17,11 @@ public class CartServiceImpl implements CartService {
 
     private Map<Long, ShoppingCart> shoppingCarts;
 
-    private CatalogRepository catalogRepository;
+    private CatalogService catalogService;
 
     @Autowired
-    public CartServiceImpl(CatalogRepository catalogRepository) {
-        this.catalogRepository = catalogRepository;
+    public CartServiceImpl(CatalogService catalogService) {
+        this.catalogService = catalogService;
         this.shoppingCarts = new HashMap<>();
     }
 
@@ -74,14 +74,11 @@ public class CartServiceImpl implements CartService {
     }
 
     public ShoppingCart removeItemFromCart(long cartId, long productId, int quantity) {
-        Optional<Product> product = this.catalogRepository.findById(productId);
-        if (!product.isPresent()) {
-            // todo: throw exception
-        }
 
+        Product product = this.catalogService.getProductById(productId);
         ShoppingCartItem item = new ShoppingCartItem();
         item.setQuantity(quantity);
-        item.setProduct(product.get());
+        item.setProduct(product);
 
         return removeItemFromCart(cartId, item);
     }
@@ -118,7 +115,7 @@ public class CartServiceImpl implements CartService {
 
     public ShoppingCart addItemToCart(long cartId, long productId, int quantity) {
         ShoppingCartItem item = new ShoppingCartItem();
-        item.setProduct(getProductFromCatalog(productId));
+        item.setProduct(this.catalogService.getProductById(productId));
         item.setQuantity(quantity);
         return addItemToCart(cartId, item);
     }
@@ -152,15 +149,4 @@ public class CartServiceImpl implements CartService {
         }
         return Optional.empty();
     }
-
-    private Product getProductFromCatalog(long productId) {
-        Optional<Product> p = this.catalogRepository.findById(productId);
-
-        if (!p.isPresent()) {
-            throw new ShoppingCartException("Product does not exist");
-        }
-        return p.get();
-    }
-
-
 }

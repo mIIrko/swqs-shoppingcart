@@ -3,7 +3,7 @@ package de.htwg.swqs.cart;
 import de.htwg.swqs.cart.service.CartService;
 import de.htwg.swqs.cart.service.CartServiceImpl;
 import de.htwg.swqs.catalog.CatalogConfiguration;
-import de.htwg.swqs.catalog.repository.CatalogRepository;
+import de.htwg.swqs.catalog.service.CatalogService;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Import;
 public class CartConfiguration {
 
     @Bean
-    public CartService cartService(CatalogRepository catalogRepository) {
-        return new CartServiceImpl(catalogRepository);
+    public CartService cartService(CatalogService catalogService) {
+        return new CartServiceImpl(catalogService);
     }
 
 }

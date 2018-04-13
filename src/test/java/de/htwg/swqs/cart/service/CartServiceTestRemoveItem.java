@@ -5,7 +5,7 @@ import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
 import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
-import de.htwg.swqs.catalog.repository.CatalogRepository;
+import de.htwg.swqs.catalog.service.CatalogService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,10 +26,10 @@ public class CartServiceTestRemoveItem {
 
     @Before
     public void setupTestFixture() {
-        CatalogRepository catalogRepositoryMock = mock(CatalogRepository.class);
-        CartService cartService = new CartServiceImpl(catalogRepositoryMock);
-        cart = cartService.createNewShoppingCart();
-        prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
+        CatalogService catalogServiceMock = mock(CatalogService.class);
+        this.cartService = new CartServiceImpl(catalogServiceMock);
+        this.cart = cartService.createNewShoppingCart();
+        this.prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
     }
 
     @Test
