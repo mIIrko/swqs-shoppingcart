@@ -65,7 +65,7 @@ public class CartServiceTest {
         CatalogService catalogServiceMock = mock(CatalogService.class);
         CartService cartService = new CartServiceImpl(catalogServiceMock);
         ShoppingCart cart = cartService.createNewShoppingCart();
-        Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
+        Product prod = new Product(1234, "Sample product", "a description", new BigDecimal("0.99"));
         ShoppingCartItem item = new ShoppingCartItem(1, prod);
         cartService.addItemToCart(cart.getId(), item);
 
@@ -74,7 +74,7 @@ public class CartServiceTest {
 
         // verify
         assertTrue(cart.getItemsInShoppingCart().isEmpty());
-        assertEquals(BigDecimal.valueOf(0), cart.getCartTotalSum());
+        assertEquals(new BigDecimal("0.00"), cart.getCartTotalSum());
     }
 
     @Test(expected = ShoppingCartException.class)
@@ -83,7 +83,7 @@ public class CartServiceTest {
         CatalogService catalogServiceMock = mock(CatalogService.class);
         CartService cartService = new CartServiceImpl(catalogServiceMock);
         ShoppingCart cart = cartService.createNewShoppingCart();
-        Product prod = new Product(1234, "Sample product", "a description", BigDecimal.valueOf(0.99));
+        Product prod = new Product(1234, "Sample product", "a description", new BigDecimal("0.99"));
         ShoppingCartItem item = new ShoppingCartItem(1, prod);
         cartService.addItemToCart(cart.getId(), item);
 

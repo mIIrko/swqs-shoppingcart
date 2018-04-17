@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CartConfiguration.class, CatalogConfiguration.class})
 @DataJpaTest
-public class CartIntegrationTest {
+public class CartIT {
 
     @Autowired
     private TestEntityManager entityManager;

@@ -6,48 +6,52 @@ import java.util.List;
 
 public class ShoppingCart {
 
-    /**
-     * Counter for the shopping cart {@code id}, used when creating new shopping carts
-     */
-    private static long idGenerator= 0L;
+  /**
+   * Counter for the shopping cart {@code id}, used when creating new shopping carts.
+   */
+  private static long idGenerator = 0L;
 
-    private long id;
-    private List<ShoppingCartItem> itemsInShoppingCart;
-    private BigDecimal cartTotalSum;
+  private long id;
+  private List<ShoppingCartItem> itemsInShoppingCart;
+  private BigDecimal cartTotalSum;
 
-    public ShoppingCart() {
-        this.itemsInShoppingCart = new ArrayList<>();
-        this.cartTotalSum = new BigDecimal("0");
-        // set a new id to the created shopping cart
-        this.id = ++idGenerator;
-    }
+  /**
+   * Default constructor which initializes the list for the items and the big decimal for the total
+   * sum.
+   */
+  public ShoppingCart() {
+    this.itemsInShoppingCart = new ArrayList<>();
+    this.cartTotalSum = new BigDecimal("0");
+    // set a new id to the created shopping cart
+    this.id = ++idGenerator;
+  }
 
-    public long getId() {
-        return id;
-    }
+  public long getId() {
+    return id;
+  }
 
-    public List<ShoppingCartItem> getItemsInShoppingCart() {
-        return itemsInShoppingCart;
-    }
+  public List<ShoppingCartItem> getItemsInShoppingCart() {
+    return itemsInShoppingCart;
+  }
 
-    public void setItemsInShoppingCartAsList(List<ShoppingCartItem> itemsInShoppingCart) {
-        this.itemsInShoppingCart = itemsInShoppingCart;
-    }
+  public void setItemsInShoppingCartAsList(List<ShoppingCartItem> itemsInShoppingCart) {
+    this.itemsInShoppingCart = itemsInShoppingCart;
+  }
 
-    public BigDecimal getCartTotalSum() {
-        return cartTotalSum;
-    }
+  public BigDecimal getCartTotalSum() {
+    return cartTotalSum;
+  }
 
-    public void setCartTotalSum(BigDecimal cartTotalSum) {
-        this.cartTotalSum = cartTotalSum;
-    }
+  public void setCartTotalSum(BigDecimal cartTotalSum) {
+    this.cartTotalSum = cartTotalSum;
+  }
 
-    @Override
-    public String toString() {
-        return "ShoppingCart{" +
-                "id=" + id +
-                ", itemsInShoppingCart=" + itemsInShoppingCart +
-                ", cartTotalSum=" + cartTotalSum +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ShoppingCart{"
+        + "id=" + id
+        + ", itemsInShoppingCart=" + itemsInShoppingCart
+        + ", cartTotalSum=" + cartTotalSum
+        + '}';
+  }
 }

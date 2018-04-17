@@ -12,16 +12,15 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootConfiguration
 @ComponentScan(basePackages = "de.htwg.swqs.cart")
-//@EnableJpaRepositories("de.htwg.swqs.cart.repository")
 @EntityScan("de.htwg.swqs.cart.model")
 @Import(CatalogConfiguration.class)
 
 public class CartConfiguration {
 
-    @Bean
-    public CartService cartService(CatalogService catalogService) {
-        return new CartServiceImpl(catalogService);
-    }
+  @Bean
+  public CartService cartService(CatalogService catalogService) {
+    return new CartServiceImpl(catalogService);
+  }
 
 }
 

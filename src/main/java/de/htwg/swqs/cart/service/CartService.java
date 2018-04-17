@@ -5,18 +5,18 @@ import de.htwg.swqs.cart.model.ShoppingCartItem;
 
 public interface CartService {
 
-    ShoppingCart createNewShoppingCart();
+  ShoppingCart createNewShoppingCart();
 
-    ShoppingCart clearShoppingCart(long cartId);
+  ShoppingCart clearShoppingCart(long cartId);
 
-    ShoppingCart getShoppingCart(long cartId);
+  ShoppingCart getShoppingCart(long cartId);
 
-    ShoppingCart removeItemFromCart(long cartId, ShoppingCartItem item);
+  ShoppingCart removeItemFromCart(long cartId, ShoppingCartItem item);
 
-    ShoppingCart removeItemFromCart(long cartId, long productId, int quantity);
+  ShoppingCart removeItemFromCart(long cartId, long productId, int quantity);
 
-    ShoppingCart addItemToCart(long cartId, ShoppingCartItem item);
+  ShoppingCart addItemToCart(long cartId, ShoppingCartItem item);
 
-    ShoppingCart addItemToCart(long cartId, long productId, int quantity);
+  ShoppingCart addItemToCart(long cartId, long productId, int quantity);
 
 }
