@@ -3,13 +3,14 @@ package de.htwg.swqs.cart.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ShoppingCart {
 
   /**
    * Counter for the shopping cart {@code id}, used when creating new shopping carts.
    */
-  private static long idGenerator = 0L;
+  private static AtomicLong idGenerator = new AtomicLong();
 
   private long id;
   private List<ShoppingCartItem> itemsInShoppingCart;
@@ -23,7 +24,7 @@ public class ShoppingCart {
     this.itemsInShoppingCart = new ArrayList<>();
     this.cartTotalSum = new BigDecimal("0");
     // set a new id to the created shopping cart
-    this.id = ++idGenerator;
+    this.id = idGenerator.incrementAndGet();
   }
 
   public long getId() {

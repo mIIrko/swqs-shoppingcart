@@ -17,11 +17,6 @@ import org.springframework.context.annotation.Import;
 
 public class CartConfiguration {
 
-  @Bean
-  public CartService cartService(CatalogService catalogService) {
-    return new CartServiceImpl(catalogService);
-  }
-
 }
 
 
