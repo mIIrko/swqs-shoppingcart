@@ -1,3 +1,10 @@
+cache:
+  paths:
+    - .m2/
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+
 # declares which docker image should be used
 # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-an-image
 image: maven:3-jdk-8
