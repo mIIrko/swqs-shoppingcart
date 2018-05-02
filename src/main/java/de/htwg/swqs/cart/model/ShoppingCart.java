@@ -35,7 +35,7 @@ public class ShoppingCart {
     return itemsInShoppingCart;
   }
 
-  public void setItemsInShoppingCartAsList(List<ShoppingCartItem> itemsInShoppingCart) {
+  public void setItemsInShoppingCart(List<ShoppingCartItem> itemsInShoppingCart) {
     this.itemsInShoppingCart = itemsInShoppingCart;
   }
 

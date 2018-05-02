@@ -3,7 +3,6 @@ package de.htwg.swqs.cart.service;
 import de.htwg.swqs.cart.model.ShoppingCart;
 import de.htwg.swqs.cart.model.ShoppingCartItem;
 import de.htwg.swqs.cart.utils.ShoppingCartException;
-import de.htwg.swqs.cart.utils.ShoppingCartItemWrongQuantityException;
 import de.htwg.swqs.catalog.model.Product;
 import de.htwg.swqs.catalog.service.CatalogService;
 import java.math.BigDecimal;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class CartServiceImpl implements CartService {
 
   private Map<Long, ShoppingCart> shoppingCarts;
-
   private CatalogService catalogService;
 
   @Autowired
@@ -28,6 +26,7 @@ public class CartServiceImpl implements CartService {
     this.catalogService = catalogService;
     this.shoppingCarts = Collections.synchronizedMap(new HashMap<>());
   }
+
 
   /**
    * Finder method to get a shopping cart identified by a id from the cart list.
@@ -59,7 +58,7 @@ public class CartServiceImpl implements CartService {
       throw new ShoppingCartException("Shopping cart does not exist");
     }
     if (item.getQuantity() < 0) {
-      throw new ShoppingCartItemWrongQuantityException("Can not remove negative quantity");
+      throw new ShoppingCartException("Can not remove negative quantity");
     }
 
     ShoppingCart cart = this.shoppingCarts.get(cartId);
@@ -75,7 +74,7 @@ public class CartServiceImpl implements CartService {
     int quantityOfItemBeforeUpdate = existingShoppingCartItem.get().getQuantity();
     // if not enough items in shopping cart throw exception
     if (quantityOfItemBeforeUpdate < item.getQuantity()) {
-      throw new ShoppingCartItemWrongQuantityException(
+      throw new ShoppingCartException(
           "Removing " + item.getQuantity() + " items from shopping cart not possible (just "
               + quantityOfItemBeforeUpdate + " present)");
     }
@@ -128,7 +127,7 @@ public class CartServiceImpl implements CartService {
       throw new ShoppingCartException("Shopping cart does not exist");
     }
     if (item.getQuantity() < 0) {
-      throw new ShoppingCartItemWrongQuantityException("Can not add negative quantity");
+      throw new ShoppingCartException("Can not add negative quantity");
     }
 
     ShoppingCart cart = this.shoppingCarts.get(cartId);
@@ -184,7 +183,7 @@ public class CartServiceImpl implements CartService {
 
     ShoppingCart cart = this.shoppingCarts.get(cartId);
     // replace the itemlist with empty arraylist
-    cart.setItemsInShoppingCartAsList(new ArrayList<>());
+    cart.setItemsInShoppingCart(new ArrayList<>());
     // reset the cart total sum
     cart.setCartTotalSum(new BigDecimal("0.00"));
     return cart;
@@ -199,6 +198,26 @@ public class CartServiceImpl implements CartService {
     ShoppingCart cart = new ShoppingCart();
     this.shoppingCarts.put(cart.getId(), cart);
     return cart;
+  }
+
+  /**
+   * For debug purposes.
+   *
+   * @return A string which represents the shopping cart list.
+   */
+  public String shoppingCartsToString() {
+    StringBuilder builder = new StringBuilder();
+    this.shoppingCarts.forEach((k, v) -> {
+      builder.append("{ id: ");
+      builder.append(v.getId());
+      builder.append(" | # items: ");
+      builder.append(v.getItemsInShoppingCart().size());
+      builder.append(" | sum: ");
+      builder.append(v.getCartTotalSum());
+      builder.append(" } \n");
+    });
+
+    return builder.toString();
   }
 
   private Optional<ShoppingCartItem> getExistingItemFromShoppingCart(
