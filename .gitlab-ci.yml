@@ -10,14 +10,11 @@ cache:
 variables:
   MAVEN_OPTS: -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
 
-maven:package:
+# we run just the test goal because the dependency to the de.htwg.swqs.catalog project
+# can not be fulfilled in the ci environment
+maven:test:
   stage: test
   script:
-  - "mvn package --batch-mode"
+  - "mvn test --batch-mode"
   - "cat target/site/jacoco/index.html"
   - "mv target/*.jar ."
-  artifacts:
-    when: on_success
-    expire_in: 20d
-    paths:
-      - "*.jar"
