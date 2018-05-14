@@ -81,6 +81,6 @@ public class CartServiceAddItemTest {
     // execute
     cartService.addItemToCart(9999999, item);
 
-    // verification is done by the expected exception
+    // The test is verified by the expected exception
   }
 }

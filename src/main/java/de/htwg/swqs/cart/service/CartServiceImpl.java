@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class CartServiceImpl implements CartService {
   @Autowired
   public CartServiceImpl(CatalogService catalogService) {
     this.catalogService = catalogService;
-    this.shoppingCarts = Collections.synchronizedMap(new HashMap<>());
+    this.shoppingCarts = new ConcurrentHashMap<>();
   }
 
 

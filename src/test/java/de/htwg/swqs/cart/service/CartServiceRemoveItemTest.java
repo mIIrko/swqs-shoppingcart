@@ -134,7 +134,7 @@ public class CartServiceRemoveItemTest {
     // execute
     cartService.removeItemFromCart(cart.getId(), anotherItem);
 
-    // verification is done with the exception
+    // The test is verified by the expected exception
   }
 
   @Test(expected = ShoppingCartException.class)

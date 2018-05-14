@@ -5,27 +5,19 @@ image: maven:3-jdk-8
 # Cache downloaded dependencies and plugins between builds.
 cache:
   paths:
-    - .m2/repository
+    - .m2/
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+  MAVEN_OPTS: -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2
 
-
-test:
+maven:package:
+  stage: test
   script:
-    - "mvn test --batch-mode"
-
-# define shell script which executed by GitLab Runner
-build:
-  #before_script:
-  #- "curl -f -L -H \"PRIVATE-TOKEN: ${RESUME_APIKEY}\" -o assets/resume.pdf 'https://gitlab.com/namespace/project/-/jobs/artifacts/master/raw/resume.pdf?job=build'"
-
-  # -B -> non-interactive batch mode
-  script:
-  - "mvn verify -B"
+  - "mvn package --batch-mode"
   - "cat target/site/jacoco/index.html"
   - "mv target/*.jar ."
   artifacts:
-      paths:
-        - "*.jar"
-      expire_in: 1d
+    when: on_success
+    expire_in: 20d
+    paths:
+      - "*.jar"
