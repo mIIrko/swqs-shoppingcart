@@ -14,6 +14,11 @@ before_script:
 maven:test:
   stage: test
   script:
-  - "mvn test --batch-mode"
+  - "mvn verify --batch-mode"
   - "cat target/site/jacoco/index.html"
   - "mv target/*.jar ."
+  artifacts:
+    when: on_success
+    expire_in: 20d
+    paths:
+      - "*.jar""
