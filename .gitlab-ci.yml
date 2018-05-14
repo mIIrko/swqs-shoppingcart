@@ -9,9 +9,7 @@ before_script:
   - "mkdir -p /root/.m2/repository/de/htwg/swqs/catalog/0.0.1-SNAPSHOT/"
   - "unzip artifacts.zip -d /root/.m2/repository/de/htwg/swqs/catalog/0.0.1-SNAPSHOT/"
 
-# we run just the test goal because the dependency to the de.htwg.swqs.catalog project
-# can not be fulfilled in the ci environment
-maven:test:
+maven:verify:
   stage: test
   script:
   - "mvn verify --batch-mode"
@@ -21,4 +19,4 @@ maven:test:
     when: on_success
     expire_in: 20d
     paths:
-      - "*.jar""
+      - "*.jar"
