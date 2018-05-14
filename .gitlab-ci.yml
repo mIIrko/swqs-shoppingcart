@@ -4,8 +4,9 @@ image: maven:3-jdk-8
 
 # will be executed before each job
 before_script:
+  - "ls -la"
   - "curl --verbose --fail --location --header \"PRIVATE-TOKEN: $PRIVATE_TOKEN_CATALOG\" --url \"https://gitlab.in.htwg-konstanz.de/mibay/swqs-catalog/-/jobs/artifacts/master/download?job=maven%3Averif\" -o artifacts.zip"
-  - "mkdir .m2/repository/de/htwg/swqs/catalog/0.0.1-SNAPSHOT/"
+  - "mkdir -p ~/.m2/repository/de/htwg/swqs/catalog/0.0.1-SNAPSHOT/"
   - "unzip artifacts.zip -d .m2/repository/de/htwg/swqs/catalog/0.0.1-SNAPSHOT/"
 
 # we run just the test goal because the dependency to the de.htwg.swqs.catalog project
